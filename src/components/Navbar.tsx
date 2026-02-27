@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const links = [
-    { label: "Protocole", href: "#structure" },
-    { label: "Valeurs", href: "#valeurs" },
-    { label: "Dynamiques", href: "#dynamiques" },
-    { label: "Ateliers", href: "#ateliers" },
-    { label: "Communauté", href: "#communaute" },
+    { label: t("nav.protocol"), href: "#structure" },
+    { label: t("nav.values"), href: "#valeurs" },
+    { label: t("nav.dynamics"), href: "#dynamiques" },
+    { label: t("nav.workshops"), href: "#ateliers" },
+    { label: t("nav.community"), href: "#communaute" },
   ];
 
   return (
@@ -36,18 +39,22 @@ const Navbar = () => {
             href="#communaute"
             className="text-sm font-medium bg-accent text-accent-foreground px-5 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
-            Rejoindre
+            {t("nav.join")}
           </a>
+          <LanguageSwitcher />
         </div>
 
         {/* Mobile toggle */}
-        <button
-          className="md:hidden text-foreground"
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="md:hidden flex items-center gap-3">
+          <LanguageSwitcher />
+          <button
+            className="text-foreground"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -75,7 +82,7 @@ const Navbar = () => {
                 onClick={() => setOpen(false)}
                 className="text-sm font-medium bg-accent text-accent-foreground px-5 py-2 rounded-md text-center hover:opacity-90 transition-opacity"
               >
-                Rejoindre
+                {t("nav.join")}
               </a>
             </div>
           </motion.div>

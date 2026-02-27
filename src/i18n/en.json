@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "protocol": "Protocol",
+    "values": "Values",
+    "dynamics": "Dynamics",
+    "workshops": "Workshops",
+    "community": "Community",
+    "join": "Join"
+  },
+  "hero": {
+    "subtitle": "A protocol for exploring human values.",
+    "line1": "16 fundamental values.",
+    "line2": "256 dynamics.",
+    "line3": "An individual and collective practice.",
+    "cta1": "Discover the protocol",
+    "cta2": "Join the community"
+  },
+  "structure": {
+    "title": "A clear structure",
+    "p1": "YonyFâ is a structured framework for exploring human values.",
+    "p2": "It is built on:",
+    "item1": "16 fundamental values",
+    "item2": "256 dynamics from their combinations",
+    "item3": "A method of individual and collective expression",
+    "note": "The protocol offers neither doctrine nor a single interpretation. It provides an open structure that anyone can engage with in their own way."
+  },
+  "values": {
+    "title": "The 16 values",
+    "intro": "These values form the foundation of the protocol. They can be studied, experienced, discussed, and interpreted.",
+    "outro": "The goal is not to fix their definition, but to enable active exploration.",
+    "list": ["Transmission", "Benevolence", "Creativity", "Gratitude", "Cohesion", "Empathy", "Authenticity", "Resilience", "Tolerance", "Equity", "Connectedness", "Intuition", "Lucidity", "Perseverance", "Humility", "Patience"]
+  },
+  "dynamics": {
+    "title": "The 256 dynamics",
+    "p1": "Each value can be combined with another.",
+    "formula": "16 × 16 = 256",
+    "p2": "Each combination becomes a field of experimentation.",
+    "note": "Dynamics can be drawn at random and explored individually or as a group. This architecture creates a potentially infinite space for exploration."
+  },
+  "practice": {
+    "title": "A living practice",
+    "intro": "YonyFâ is meant to be practiced. Members can contribute:",
+    "items": ["A posture", "A text", "A visual creation", "A sound interpretation", "A personal reflection", "A movement sequence"],
+    "outro": "The platform allows sharing these contributions and enriching collective understanding."
+  },
+  "workshops": {
+    "title": "Workshops",
+    "intro": "Workshops can be organized locally, facilitated by <strong>Weavers</strong> trained in the protocol.",
+    "rolesTitle": "Facilitator's role",
+    "roles": ["Uphold the framework", "Ensure respect", "Facilitate exchange", "Preserve neutrality"],
+    "stepsTitle": "Process",
+    "steps": ["Drawing a dynamic", "An exploration phase", "A sharing moment", "A collective synthesis"]
+  },
+  "publications": {
+    "title": "Publications",
+    "intro": "Community contributions feed into publications. These works gather:",
+    "items": ["Analyses", "Interpretations", "Creations", "Experience reports", "International perspectives"],
+    "outro": "They constitute an evolving memory of the project."
+  },
+  "communitySection": {
+    "title": "Join the community",
+    "intro": "YonyFâ is a structured and open space. You can:",
+    "actions": ["Explore the 16 values", "Share your contributions", "Participate in workshops", "Follow inspiring members", "Contribute to future publications"],
+    "note": "The protocol is stable. Interpretations are many.",
+    "cta1": "Join the community",
+    "cta2": "Subscribe to the newsletter"
+  },
+  "footer": {
+    "description": "A pedagogical protocol for exploring human values.",
+    "navTitle": "Navigation",
+    "communityTitle": "Community",
+    "legalTitle": "Legal",
+    "join": "Join",
+    "newsletter": "Newsletter",
+    "social": "Social media",
+    "charter": "Ethical charter",
+    "legal": "Legal notice",
+    "contact": "Contact",
+    "rights": "All rights reserved"
+  }
+}
