@@ -35,7 +35,9 @@
     "p1": "Each value can be combined with another.",
     "formula": "16 × 16 = 256",
     "p2": "Each combination becomes a field of experimentation.",
-    "note": "Dynamics can be drawn at random and explored individually or as a group. This architecture creates a potentially infinite space for exploration."
+    "note": "Dynamics can be drawn at random and explored individually or as a group. This architecture creates a potentially infinite space for exploration.",
+    "legendSame": "Value × itself",
+    "legendCombo": "Combination"
   },
   "practice": {
     "title": "A living practice",
