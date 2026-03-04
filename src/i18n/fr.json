@@ -35,7 +35,9 @@
     "p1": "Chaque valeur peut être combinée avec une autre.",
     "formula": "16 × 16 = 256",
     "p2": "Chaque combinaison devient un terrain d'expérimentation.",
-    "note": "Les dynamiques peuvent être tirées au sort et explorées individuellement ou en groupe. Cette architecture crée un espace d'exploration potentiellement infini."
+    "note": "Les dynamiques peuvent être tirées au sort et explorées individuellement ou en groupe. Cette architecture crée un espace d'exploration potentiellement infini.",
+    "legendSame": "Valeur × elle-même",
+    "legendCombo": "Combinaison"
   },
   "practice": {
     "title": "Une pratique vivante",
