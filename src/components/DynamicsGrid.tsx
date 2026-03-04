@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { DYNAMICS_MATRIX } from "@/data/dynamics";
 
 const DynamicsGrid = () => {
   const { t } = useTranslation();
@@ -9,6 +10,10 @@ const DynamicsGrid = () => {
 
   const getShortLabel = useCallback((value: string) => {
     return value.length > 4 ? value.slice(0, 3) + "." : value;
+  }, []);
+
+  const getDynamicWord = useCallback((row: number, col: number) => {
+    return DYNAMICS_MATRIX[row]?.[col] ?? "";
   }, []);
 
   return (
@@ -23,17 +28,26 @@ const DynamicsGrid = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.15 }}
-              className="text-center mb-4 h-10 flex items-center justify-center"
+              className="text-center mb-4 h-14 flex items-center justify-center"
             >
-              <span className="inline-flex items-center gap-2 bg-foreground text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-                <span>{values[hovered.row]}</span>
-                <span className="text-accent">×</span>
-                <span>{values[hovered.col]}</span>
-              </span>
+              <div className="inline-flex flex-col items-center gap-1 bg-foreground text-primary-foreground px-5 py-2 rounded-xl text-sm font-medium shadow-lg">
+                {hovered.row === hovered.col ? (
+                  <span className="text-base font-semibold">{values[hovered.row]}</span>
+                ) : (
+                  <>
+                    <span className="text-[11px] opacity-70">
+                      {values[hovered.row]} <span className="text-accent">×</span> {values[hovered.col]}
+                    </span>
+                    <span className="text-base font-semibold text-accent">
+                      {getDynamicWord(hovered.row, hovered.col)}
+                    </span>
+                  </>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-        {!hovered && <div className="h-10 mb-4" />}
+        {!hovered && <div className="h-14 mb-4" />}
 
         {/* Column headers */}
         <div className="grid gap-[2px]" style={{ gridTemplateColumns: `40px repeat(16, 1fr)` }}>
