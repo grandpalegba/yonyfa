@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
@@ -35,6 +36,12 @@ const Navbar = () => {
               {l.label}
             </a>
           ))}
+          <Link
+            to="/sagesses"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t("nav.sagesses", "Sagesses")}
+          </Link>
           <a
             href="#communaute"
             className="text-sm font-medium bg-accent text-accent-foreground px-5 py-2 rounded-md hover:opacity-90 transition-opacity"
@@ -77,6 +84,13 @@ const Navbar = () => {
                   {l.label}
                 </a>
               ))}
+              <Link
+                to="/sagesses"
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t("nav.sagesses", "Sagesses")}
+              </Link>
               <a
                 href="#communaute"
                 onClick={() => setOpen(false)}
