@@ -1,8 +1,10 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SIGNS, shuffle, valueToMatrixIndex, type FongbeSign } from "@/data/fongbe";
 import { DYNAMICS_MATRIX } from "@/data/dynamics";
+import { pickRandomCase, type LifeCase } from "@/data/cases";
 import CombinedTrace from "./CombinedTrace";
+import CaseQCM from "./CaseQCM";
 import { RefreshCw } from "lucide-react";
 
 interface RevealedCell {
@@ -11,17 +13,20 @@ interface RevealedCell {
   signX: FongbeSign;
   signY: FongbeSign;
   dynamicWord: string;
+  lifeCase: LifeCase;
 }
 
 const SandMatrix = () => {
   const [shuffledX, setShuffledX] = useState(() => shuffle(SIGNS));
   const [shuffledY, setShuffledY] = useState(() => shuffle(SIGNS));
   const [revealed, setRevealed] = useState<RevealedCell | null>(null);
+  const [qcmDone, setQcmDone] = useState(false);
 
   const reshuffle = useCallback(() => {
     setShuffledX(shuffle(SIGNS));
     setShuffledY(shuffle(SIGNS));
     setRevealed(null);
+    setQcmDone(false);
   }, []);
 
   const handleCellClick = useCallback((row: number, col: number) => {
@@ -30,8 +35,13 @@ const SandMatrix = () => {
     const matrixRow = signY.valueIndex;
     const matrixCol = valueToMatrixIndex(signX.value);
     const dynamicWord = DYNAMICS_MATRIX[matrixRow]?.[matrixCol] ?? "";
-    setRevealed({ row, col, signX, signY, dynamicWord });
+    setRevealed({ row, col, signX, signY, dynamicWord, lifeCase: pickRandomCase() });
+    setQcmDone(false);
   }, [shuffledX, shuffledY]);
+
+  const handleQcmComplete = useCallback(() => {
+    setQcmDone(true);
+  }, []);
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -88,6 +98,34 @@ const SandMatrix = () => {
             >
               {revealed.dynamicWord}
             </motion.p>
+
+            {/* QCM */}
+            {!qcmDone && (
+              <CaseQCM
+                lifeCase={revealed.lifeCase}
+                dynamicWord={revealed.dynamicWord}
+                onComplete={handleQcmComplete}
+              />
+            )}
+
+            {qcmDone && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-6"
+              >
+                <button
+                  onClick={reshuffle}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                  style={{
+                    background: "hsl(32, 60%, 52%)",
+                    color: "hsl(30, 10%, 8%)",
+                  }}
+                >
+                  Nouveau tirage
+                </button>
+              </motion.div>
+            )}
           </motion.div>
         ) : (
           <motion.div
