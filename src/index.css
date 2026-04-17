@@ -44,6 +44,11 @@
     --warm-100: 36 25% 93%;
     --warm-200: 36 20% 88%;
 
+    /* Benin flag accents (subtle, used sparingly) */
+    --benin-green: 145 55% 38%;
+    --benin-yellow: 45 90% 55%;
+    --benin-red: 358 70% 52%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;

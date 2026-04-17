@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Play } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import CombinedTrace from "./CombinedTrace";
-import wallVideoAsset from "@/assets/wall-ambience.mp4.asset.json";
+import { PROFILE_PHOTOS } from "@/assets/profiles";
 import { computeGlobalScore, type Consultation } from "@/data/consultations";
 
 interface Props {
@@ -28,6 +28,10 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
     }, 1800);
   };
 
+  const photo = consultation
+    ? PROFILE_PHOTOS[consultation.videoSeed % PROFILE_PHOTOS.length]
+    : null;
+
   return (
     <AnimatePresence>
       {consultation && (
@@ -35,8 +39,7 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md"
-          style={{ background: "hsl(30, 10%, 4%, 0.85)" }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-foreground/30"
           onClick={onClose}
         >
           <motion.div
@@ -45,122 +48,149 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border p-6 md:p-8"
-            style={{
-              background: "hsl(30, 10%, 10%)",
-              borderColor: "hsl(36, 40%, 25%)",
-            }}
+            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-card border border-border p-6 md:p-8 shadow-2xl"
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full transition-colors hover:bg-white/5"
-              style={{ color: "hsl(36, 25%, 60%)" }}
+              className="absolute top-4 right-4 p-2 rounded-full transition-colors hover:bg-muted text-muted-foreground"
               aria-label="Fermer"
             >
               <X size={18} />
             </button>
 
-            {/* Video */}
-            <div className="relative aspect-video rounded-xl overflow-hidden mb-5" style={{ background: "hsl(30, 10%, 6%)" }}>
-              <video
-                src={wallVideoAsset.url}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-                style={{
-                  filter: `hue-rotate(${(consultation.videoSeed % 40) - 20}deg) brightness(0.7)`,
-                }}
-              />
-              <div className="absolute bottom-3 left-3 text-xs px-2 py-1 rounded-md backdrop-blur-sm" style={{ background: "hsl(30, 10%, 8%, 0.7)", color: "hsl(40, 60%, 65%)" }}>
-                ✦ {consultation.author}
+            {/* Profile card with photo + play badge (simulates audio/video presence) */}
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-5 bg-muted">
+              {photo && (
+                <motion.img
+                  src={photo}
+                  alt={consultation.author}
+                  className="w-full h-full object-cover"
+                  initial={{ scale: 1.05 }}
+                  animate={{ scale: [1.05, 1.08, 1.05] }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                />
+              )}
+              {/* Play indicator (audio/video presence) */}
+              <div className="absolute top-3 right-3 w-10 h-10 rounded-full backdrop-blur-md bg-background/80 flex items-center justify-center shadow-md">
+                <Play size={16} className="text-foreground ml-0.5" fill="currentColor" />
+              </div>
+              {/* Author chip */}
+              <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-background/85 shadow-sm">
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: "hsl(var(--benin-green))" }}
+                />
+                <span className="text-xs font-medium text-foreground">
+                  {consultation.author}
+                </span>
               </div>
             </div>
 
             {/* Sign + value */}
             <div className="flex items-center gap-4 mb-5">
-              <CombinedTrace leftCode={consultation.signX.code} rightCode={consultation.signY.code} size={64} color="hsl(40, 60%, 65%)" />
+              <CombinedTrace
+                leftCode={consultation.signX.code}
+                rightCode={consultation.signY.code}
+                size={56}
+                color="hsl(var(--foreground))"
+              />
               <div className="flex-1 min-w-0">
-                <h3 className="font-display text-xl truncate" style={{ color: "hsl(40, 60%, 65%)" }}>
+                <h3 className="font-display text-xl truncate text-foreground">
                   {consultation.signX.name}-{consultation.signY.name}
                 </h3>
-                <p className="text-xs" style={{ color: "hsl(36, 25%, 55%)" }}>
+                <p className="text-xs text-muted-foreground">
                   {consultation.signX.value} × {consultation.signY.value}
                 </p>
-                <p className="font-display text-base mt-1" style={{ color: "hsl(32, 60%, 52%)" }}>
+                <p className="font-display text-base mt-1 text-accent">
                   {consultation.dynamicWord}
                 </p>
               </div>
             </div>
 
             {/* Case + answer */}
-            <div className="rounded-xl p-4 mb-5" style={{ background: "hsl(30, 10%, 8%)", border: "1px solid hsl(36, 25%, 18%)" }}>
-              <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-widest" style={{ color: "hsl(32, 60%, 52%)" }}>
+            <div className="rounded-xl p-4 mb-5 bg-muted/50 border border-border">
+              <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-widest text-muted-foreground">
                 <span className="text-lg">{consultation.lifeCase.emoji}</span>
                 <span>{consultation.lifeCase.label}</span>
               </div>
-              <p className="text-sm italic mb-3" style={{ color: "hsl(36, 25%, 65%)" }}>
+              <p className="text-sm italic mb-3 text-foreground/70">
                 « {consultation.lifeCase.situation} »
               </p>
-              <div className="text-xs uppercase tracking-widest mb-1" style={{ color: "hsl(36, 25%, 50%)" }}>
+              <div className="text-[10px] uppercase tracking-widest mb-1 text-muted-foreground">
                 Réponse choisie
               </div>
-              <p className="text-sm mb-3" style={{ color: "hsl(40, 60%, 65%)" }}>
-                {String.fromCharCode(65 + consultation.selectedOption)}. {consultation.lifeCase.options[consultation.selectedOption]}
+              <p className="text-sm mb-3 font-medium text-foreground">
+                {String.fromCharCode(65 + consultation.selectedOption)}.{" "}
+                {consultation.lifeCase.options[consultation.selectedOption]}
               </p>
-              <p className="text-sm leading-relaxed" style={{ color: "hsl(40, 20%, 85%)" }}>
+              <p className="text-sm leading-relaxed text-foreground/80">
                 {consultation.reflection}
               </p>
             </div>
 
             {/* Current scores */}
-            <div className="flex items-center justify-between mb-5 px-1">
-              <div className="text-xs uppercase tracking-widest" style={{ color: "hsl(36, 25%, 50%)" }}>
-                Score global communauté
+            <div className="flex items-center justify-between mb-4 px-1">
+              <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                Score communauté
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-display text-2xl" style={{ color: "hsl(40, 60%, 65%)" }}>
+                <span className="font-display text-2xl text-foreground">
                   {computeGlobalScore(consultation.scores)}
                 </span>
-                <span className="text-xs" style={{ color: "hsl(36, 25%, 50%)" }}>
+                <span className="text-xs text-muted-foreground">
                   ({consultation.scores.count} avis)
                 </span>
               </div>
             </div>
 
+            {/* Score breakdown — colored with Benin palette */}
             <div className="grid grid-cols-3 gap-2 mb-6 text-center">
               {[
-                { label: "Résonance", value: consultation.scores.resonance },
-                { label: "Pertinence", value: consultation.scores.relevance },
-                { label: "Clarté", value: consultation.scores.clarity },
+                { label: "Résonance", value: consultation.scores.resonance, color: "hsl(var(--benin-green))" },
+                { label: "Pertinence", value: consultation.scores.relevance, color: "hsl(var(--benin-yellow))" },
+                { label: "Clarté", value: consultation.scores.clarity, color: "hsl(var(--benin-red))" },
               ].map((s) => (
-                <div key={s.label} className="rounded-lg p-2" style={{ background: "hsl(30, 10%, 8%)", border: "1px solid hsl(36, 25%, 16%)" }}>
-                  <div className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "hsl(36, 25%, 50%)" }}>{s.label}</div>
-                  <div className="font-display text-lg" style={{ color: "hsl(32, 60%, 52%)" }}>{s.value}</div>
+                <div
+                  key={s.label}
+                  className="rounded-lg p-3 bg-background border border-border"
+                >
+                  <div className="flex items-center justify-center gap-1.5 mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.color }} />
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      {s.label}
+                    </div>
+                  </div>
+                  <div className="font-display text-lg" style={{ color: s.color }}>
+                    {s.value}
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* Evaluation */}
             {!submitted ? (
-              <div className="space-y-5 pt-5 border-t" style={{ borderColor: "hsl(36, 25%, 18%)" }}>
-                <p className="text-xs uppercase tracking-widest text-center" style={{ color: "hsl(32, 60%, 52%)" }}>
+              <div className="space-y-5 pt-5 border-t border-border">
+                <p className="text-xs uppercase tracking-widest text-center text-muted-foreground">
                   Votre évaluation
                 </p>
 
                 {[
-                  { label: "Résonance", question: "Cette réponse résonne-t-elle en vous ?", value: resonance, set: setResonance },
-                  { label: "Pertinence", question: "Le conseil est-il adapté à la situation ?", value: relevance, set: setRelevance },
-                  { label: "Clarté", question: "Le message est-il clair et bien exprimé ?", value: clarity, set: setClarity },
+                  { label: "Résonance", question: "Cette réponse résonne-t-elle en vous ?", value: resonance, set: setResonance, color: "hsl(var(--benin-green))" },
+                  { label: "Pertinence", question: "Le conseil est-il adapté à la situation ?", value: relevance, set: setRelevance, color: "hsl(var(--benin-yellow))" },
+                  { label: "Clarté", question: "Le message est-il clair et bien exprimé ?", value: clarity, set: setClarity, color: "hsl(var(--benin-red))" },
                 ].map((c) => (
                   <div key={c.label}>
                     <div className="flex items-baseline justify-between mb-2">
-                      <div>
-                        <span className="text-sm font-medium" style={{ color: "hsl(40, 60%, 65%)" }}>{c.label}</span>
-                        <span className="text-xs ml-2 italic" style={{ color: "hsl(36, 25%, 55%)" }}>{c.question}</span>
+                      <div className="flex items-baseline gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full self-center" style={{ background: c.color }} />
+                        <span className="text-sm font-medium text-foreground">{c.label}</span>
+                        <span className="text-xs italic text-muted-foreground hidden sm:inline">
+                          {c.question}
+                        </span>
                       </div>
-                      <span className="font-display text-lg" style={{ color: "hsl(32, 60%, 52%)" }}>{c.value[0]}</span>
+                      <span className="font-display text-lg" style={{ color: c.color }}>
+                        {c.value[0]}
+                      </span>
                     </div>
                     <Slider value={c.value} onValueChange={c.set} max={100} step={1} />
                   </div>
@@ -168,8 +198,7 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
 
                 <button
                   onClick={handleSubmit}
-                  className="w-full py-3 rounded-xl text-sm font-semibold transition-all"
-                  style={{ background: "hsl(32, 60%, 52%)", color: "hsl(30, 10%, 8%)" }}
+                  className="w-full py-3 rounded-full text-sm font-semibold transition-all bg-foreground text-background hover:opacity-90"
                 >
                   Transmettre mon évaluation
                 </button>
@@ -180,10 +209,10 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-6"
               >
-                <p className="font-display text-lg" style={{ color: "hsl(40, 60%, 65%)" }}>
+                <p className="font-display text-lg text-foreground">
                   ✦ Votre regard a été reçu.
                 </p>
-                <p className="text-xs mt-2 italic" style={{ color: "hsl(36, 25%, 55%)" }}>
+                <p className="text-xs mt-2 italic text-muted-foreground">
                   Chaque évaluation nourrit le discernement collectif.
                 </p>
               </motion.div>

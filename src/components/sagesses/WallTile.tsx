@@ -1,6 +1,6 @@
 import { useEffect, useRef, memo } from "react";
 import { motion } from "framer-motion";
-import wallVideoAsset from "@/assets/wall-ambience.mp4.asset.json";
+import { PROFILE_PHOTOS } from "@/assets/profiles";
 import type { Consultation } from "@/data/consultations";
 
 interface Props {
@@ -9,34 +9,40 @@ interface Props {
   onClick: (c: Consultation) => void;
 }
 
-const WallTile = memo(({ consultation, index, onClick }: Props) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+// Subtle Benin accent rotation — used very sparingly (only on hover ring)
+const BENIN_ACCENTS = [
+  "hsl(var(--benin-green))",
+  "hsl(var(--benin-yellow))",
+  "hsl(var(--benin-red))",
+];
 
-  // Apply per-tile loop offset for "many voices" feel
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const handleLoaded = () => {
-      try {
-        v.currentTime = consultation.videoOffset % (v.duration || 5);
-        v.play().catch(() => {});
-      } catch {}
-    };
-    v.addEventListener("loadedmetadata", handleLoaded);
-    return () => v.removeEventListener("loadedmetadata", handleLoaded);
-  }, [consultation.videoOffset]);
+const WallTile = memo(({ consultation, index, onClick }: Props) => {
+  const tileRef = useRef<HTMLButtonElement>(null);
+
+  // Pick a profile photo deterministically from the seed
+  const photo = PROFILE_PHOTOS[consultation.videoSeed % PROFILE_PHOTOS.length];
+  const accent = BENIN_ACCENTS[index % BENIN_ACCENTS.length];
 
   // Subtle organic floating per tile
-  const driftDelay = (index % 7) * 0.4;
-  const driftDuration = 6 + (index % 5);
+  const driftDelay = (index % 7) * 0.35;
+  const driftDuration = 7 + (index % 5);
+
+  // Tiny "breath" on photos to simulate liveness
+  const breathDelay = (index % 9) * 0.4;
+  const breathDuration = 5 + (index % 4);
+
+  useEffect(() => {
+    // No-op; animation handled by framer-motion
+  }, []);
 
   return (
     <motion.button
+      ref={tileRef}
       onClick={() => onClick(consultation)}
-      className="relative aspect-square overflow-hidden rounded-[3px] cursor-pointer group"
+      className="relative aspect-square overflow-hidden rounded-[4px] cursor-pointer group bg-muted"
       animate={{
-        y: [0, -2, 0, 2, 0],
-        opacity: [0.75, 0.95, 0.75],
+        y: [0, -1.5, 0, 1.5, 0],
+        opacity: [0.92, 1, 0.92],
       }}
       transition={{
         duration: driftDuration,
@@ -44,42 +50,41 @@ const WallTile = memo(({ consultation, index, onClick }: Props) => {
         repeat: Infinity,
         ease: "easeInOut",
       }}
-      whileHover={{ scale: 1.25, zIndex: 10, opacity: 1 }}
+      whileHover={{ scale: 1.35, zIndex: 20, opacity: 1 }}
       style={{
-        boxShadow: "inset 0 0 0 1px hsl(36, 25%, 18%)",
+        boxShadow: "inset 0 0 0 1px hsl(var(--border))",
       }}
       aria-label={`Consultation de ${consultation.author}`}
     >
-      <video
-        ref={videoRef}
-        src={wallVideoAsset.url}
-        muted
-        loop
-        playsInline
-        autoPlay
-        preload="metadata"
+      {/* Profile photo with gentle breathing zoom for "liveness" */}
+      <motion.img
+        src={photo}
+        alt=""
+        loading="lazy"
+        width={512}
+        height={512}
         className="absolute inset-0 w-full h-full object-cover"
-        style={{
-          filter: `hue-rotate(${(consultation.videoSeed % 40) - 20}deg) brightness(${0.5 + (consultation.videoSeed % 30) / 100})`,
+        animate={{ scale: [1, 1.04, 1] }}
+        transition={{
+          duration: breathDuration,
+          delay: breathDelay,
+          repeat: Infinity,
+          ease: "easeInOut",
         }}
       />
-      {/* Warm overlay for cohesion */}
+
+      {/* Soft warm wash for visual cohesion (very subtle) */}
       <div
-        className="absolute inset-0 mix-blend-overlay opacity-60"
+        className="absolute inset-0 pointer-events-none mix-blend-soft-light opacity-30"
         style={{
-          background: `radial-gradient(circle at ${(consultation.videoSeed % 100)}% ${((consultation.videoSeed * 3) % 100)}%, hsl(32, 60%, 52%, 0.4), transparent 70%)`,
+          background: "linear-gradient(135deg, hsl(40, 33%, 96%) 0%, transparent 60%)",
         }}
       />
-      {/* Gentle vignette */}
+
+      {/* Hover: thin Benin accent ring */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(circle, transparent 40%, hsl(30, 10%, 8%, 0.5) 100%)",
-        }}
-      />
-      {/* Hover glow */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{ boxShadow: "inset 0 0 12px hsl(40, 60%, 65%, 0.6)" }}
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[4px]"
+        style={{ boxShadow: `inset 0 0 0 2px ${accent}` }}
       />
     </motion.button>
   );
