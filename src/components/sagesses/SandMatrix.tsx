@@ -5,6 +5,7 @@ import { DYNAMICS_MATRIX } from "@/data/dynamics";
 import { pickRandomCase, type LifeCase } from "@/data/cases";
 import CombinedTrace from "./CombinedTrace";
 import CaseQCM from "./CaseQCM";
+import SignDisplay from "./SignDisplay";
 import { RefreshCw } from "lucide-react";
 
 interface RevealedCell {
@@ -98,6 +99,19 @@ const SandMatrix = () => {
             >
               {revealed.dynamicWord}
             </motion.p>
+
+            {/* Authentic Fa sign + reformulated meaning */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+              className="mt-6 text-left"
+            >
+              <SignDisplay
+                signXIdx={revealed.signX.index}
+                signYIdx={revealed.signY.index}
+              />
+            </motion.div>
 
             {/* QCM */}
             {!qcmDone && (
