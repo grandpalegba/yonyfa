@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Play } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import CombinedTrace from "./CombinedTrace";
+import SignDisplay from "./SignDisplay";
 import { PROFILE_PHOTOS } from "@/assets/profiles";
 import { computeGlobalScore, type Consultation } from "@/data/consultations";
 
@@ -105,6 +106,14 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
                   {consultation.dynamicWord}
                 </p>
               </div>
+            </div>
+
+            {/* Authentic Fa sign + reformulated meaning */}
+            <div className="mb-5">
+              <SignDisplay
+                signXIdx={consultation.signX.index}
+                signYIdx={consultation.signY.index}
+              />
             </div>
 
             {/* Case + answer */}
